@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VINIT GAMING</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#090611;color:white;font-family:Arial}
+header{background:#170c27;padding:17px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #883ac2}
+.logo{color:#d69aff;font-size:21px;font-weight:bold}
+nav a{color:white;text-decoration:none;margin-left:10px;font-size:13px}
+.hero{text-align:center;padding:60px 12px;background:linear-gradient(130deg,#421064,#090611,#250a3c)}
+.hero h1{font-size:36px;color:#d9a4ff;margin-bottom:12px}
+.hero p{color:#ddd;margin-bottom:20px}
+button{cursor:pointer}
+.primary{background:#963bd3;color:white;border:0;padding:12px 20px;border-radius:7px}
+.section{padding:30px 5%}
+.section h2{color:#d6a0ff;margin-bottom:18px}
+.search{width:100%;padding:14px;background:#1a1126;color:white;border:1px solid #7944a0;border-radius:8px;margin-bottom:16px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.filter{padding:9px 15px;background:#1a1126;color:white;border:1px solid #7944a0;border-radius:20px}
+.filter.active{background:#963bd3}
+.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px}
+.card{background:#1a1126;border:1px solid #48255f;border-radius:12px;overflow:hidden}
+.cover{height:140px;background:#321748;display:flex;align-items:center;justify-content:center;font-size:45px}
+.cover img{width:100%;height:100%;object-fit:cover}
+.info{padding:13px}
+.info h3{font-size:16px;margin-bottom:8px}
+.info p{font-size:12px;color:#c8b6d8;line-height:1.5}
+.meta{font-size:11px;color:#d49aff;margin:10px 0}
+.action{display:block;background:#9136cd;color:white;text-align:center;padding:11px;text-decoration:none;border-radius:7px;font-weight:bold;font-size:13px}
+.empty{display:none;color:#c8b6d8;padding:20px 0}
+.about{color:#c8b6d8;line-height:1.8}
+footer{text-align:center;padding:25px;background:#170c27;border-top:1px solid #70418c;color:#c8b6d8}
+.adminbtn{margin-top:12px;padding:9px 15px;background:transparent;color:#d49aff;border:1px solid #7944a0;border-radius:7px}
+.modal{display:none;position:fixed;inset:0;background:#000d;z-index:10;align-items:center;justify-content:center;padding:15px}
+.modalbox{background:#1a1126;border:1px solid #963bd3;border-radius:12px;padding:20px;width:100%;max-width:430px;max-height:90vh;overflow:auto}
+.modalbox h2{color:#d49aff;margin-bottom:15px}
+.modalbox input,.modalbox textarea,.modalbox select{width:100%;padding:12px;margin-bottom:11px;background:#090611;color:white;border:1px solid #7944a0;border-radius:7px}
+.adminitem{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #49325b;gap:8px}
+.delete{background:#a52b43;color:white;border:0;padding:8px;border-radius:5px}
+.close{background:#51425e;color:white;border:0;padding:9px 15px;border-radius:6px;margin-top:10px}
+@media(max-width:600px){.hero h1{font-size:29px}.logo{font-size:17px}nav a{font-size:11px;margin-left:5px}}
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo">🎮 VINIT GAMING</div>
+<nav>
+<a href="#home">Home</a>
+<a href="#games">Games</a>
+<a href="#about">About</a>
+</nav>
+</header>
+
+<section class="hero" id="home">
+<h1>VINIT GAMING</h1>
+<p>Download & Play Your Favourite Games!</p>
+<button class="primary" onclick="document.getElementById('games').scrollIntoView({behavior:'smooth'})">EXPLORE GAMES</button>
+</section>
+
+<section class="section" id="games">
+<h2>🔥 ALL GAMES</h2>
+<input class="search" id="search" placeholder="🔍 Search games..." oninput="showGames()">
+<div class="filters">
+<button class="filter active" onclick="filterGames('All',this)">All</button>
+<button class="filter" onclick="filterGames('APK',this)">APK</button>
+<button class="filter" onclick="filterGames('HTML',this)">HTML</button>
+<button class="filter" onclick="filterGames('itch.io',this)">itch.io</button>
+</div>
+<div class="games" id="gameList"></div>
+<p class="empty" id="empty">No games found!</p>
+</section>
+
+<section class="section" id="about">
+<h2>👑 ABOUT US</h2>
+<p class="about">Welcome to VINIT GAMING! Discover exciting games, download your favourite games and enjoy gaming. All your games in one place!</p>
+</section>
+
+<footer>
+<p>© 2026 VINIT GAMING</p>
+<p>Made with ❤️ for Gamers</p>
+<button class="adminbtn" onclick="openAdmin()">⚙ ADMIN PANEL</button>
+</footer>
+
+<div class="modal" id="adminModal">
+<div class="modalbox">
+<h2>⚙ ADMIN PANEL</h2>
+<div id="loginArea">
+<input id="password" type="password" placeholder="Admin password">
+<button class="primary" onclick="login()">LOGIN</button>
+</div>
+<div id="adminArea" style="display:none">
+<h3 style="color:#d49aff;margin:15px 0">Add New Game</h3>
+<input id="gName" placeholder="Game name">
+<textarea id="gDesc" placeholder="Game description"></textarea>
+<input id="gImage" placeholder="Image URL (optional)">
+<select id="gType">
+<option value="APK">Android APK</option>
+<option value="HTML">HTML Game</option>
+<option value="itch.io">itch.io Game</option>
+</select>
+<input id="gSize" placeholder="Game size">
+<input id="gLink" placeholder="Game download / play URL">
+<button class="primary" onclick="addGame()">ADD GAME</button>
+<h3 style="color:#d49aff;margin:20px 0 10px">Manage Games</h3>
+<div id="adminList"></div>
+</div>
+<button class="close" onclick="closeAdmin()">CLOSE</button>
+</div>
+</div>
+
+<script>
+"use strict";
+
+const ADMIN_PASSWORD="vinit123";
+
+const defaults=[
+{id:"d1",name:"Gun Flip Battle",desc:"Action Shooting Game",image:"",type:"itch.io",size:"Online",link:""},
+{id:"d2",name:"Horror Escape",desc:"Scary Adventure Game",image:"",type:"HTML",size:"Online",link:""},
+{id:"d3",name:"Car Racing",desc:"Racing Game",image:"",type:"APK",size:"25 MB",link:""}
+];
+
+let extra=[];
+try{
+extra=JSON.parse(localStorage.getItem("vinitGames")||"[]");
+if(!Array.isArray(extra))extra=[];
+}catch(e){extra=[];}
+
+let games=defaults.concat(extra);
+let selected="All";
+
+function save(){
+try{
+localStorage.setItem("vinitGames",JSON.stringify(games.filter(g=>!String(g.id).startsWith("d"))));
+}catch(e){
+alert("Storage full! Please use smaller images.");
+}
+}
+
+function showGames(){
+const list=document.getElementById("gameList");
+const search=document.getElementById("search").value.toLowerCase();
+list.innerHTML="";
+let count=0;
+
+games.forEach(g=>{
+if(!g.name.toLowerCase().includes(search))return;
+if(selected!=="All" && g.type!==selected)return;
+count++;
+
+const card=document.createElement("div");
+card.className="card";
+
+const cover=document.createElement("div");
+cover.className="cover";
+
+if(g.image){
+const img=document.createElement("img");
+img.src=g.image;
+img.alt=g.name;
+img.onerror=()=>{cover.textContent="🎮";};
+cover.appendChild(img);
+}else{
+cover.textContent="🎮";
+}
+
+const info=document.createElement("div");
+info.className="info";
+
+const title=document.createElement("h3");
+title.textContent=g.name;
+
+const desc=document.createElement("p");
+desc.textContent=g.desc||"Enjoy this game!";
+
+const meta=document.createElement("div");
+meta.className="meta";
+meta.textContent=g.type+" • "+(g.size||"Unknown size");
+
+const link=document.createElement("a");
+link.className="action";
+link.textContent=g.type==="HTML"?"▶ PLAY NOW":"⬇ DOWNLOAD";
+link.href=g.link||"#";
+link.target="_blank";
+link.rel="noopener noreferrer";
+
+link.onclick=function(e){
+if(!g.link){
+e.preventDefault();
+alert("Game link abhi add nahi hua!");
+}
+};
+
+info.append(title,desc,meta,link);
+card.append(cover,info);
+list.appendChild(card);
+});
+
+document.getElementById("empty").style.display=count?"none":"block";
+}
+
+function filterGames(type,btn){
+selected=type;
+document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+showGames();
+}
+
+function openAdmin(){
+document.getElementById("adminModal").style.display="flex";
+}
+
+function closeAdmin(){
+document.getElementById("adminModal").style.display="none";
+}
+
+function login(){
+if(document.getElementById("password").value===ADMIN_PASSWORD){
+document.getElementById("loginArea").style.display="none";
+document.getElementById("adminArea").style.display="block";
+renderAdmin();
+}else{
+alert("Wrong password!");
+}
+}
+
+function addGame(){
+const name=document.getElementById("gName").value.trim();
+const desc=document.getElementById("gDesc").value.trim();
+const image=document.getElementById("gImage").value.trim();
+const type=document.getElementById("gType").value;
+const size=document.getElementById("gSize").value.trim();
+const link=document.getElementById("gLink").value.trim();
+
+if(!name||!link){
+alert("Game name and link are required!");
+return;
+}
+
+if(!/^https?:\/\//i.test(link)){
+alert("Please enter a valid game URL!");
+return;
+}
+
+if(image && !/^https?:\/\//i.test(image)){
+alert("Please enter a valid image URL!");
+return;
+}
+
+games.push({
+id:"g"+Date.now(),name,desc,image,type,size,link
+});
+
+save();
+showGames();
+renderAdmin();
+
+["gName","gDesc","gImage","gSize","gLink"].forEach(id=>{
+document.getElementById(id).value="";
+});
+
+alert("Game added successfully!");
+}
+
+function renderAdmin(){
+const box=document.getElementById("adminList");
+box.innerHTML="";
+
+games.forEach(g=>{
+const item=document.createElement("div");
+item.className="adminitem";
+
+const name=document.createElement("span");
+name.textContent=g.name;
+
+const btn=document.createElement("button");
+btn.className="delete";
+btn.textContent="DELETE";
+
+btn.onclick=function(){
+if(confirm("Delete "+g.name+"?")){
+games=games.filter(x=>x.id!==g.id);
+save();
+showGames();
+renderAdmin();
+}
+};
+
+item.append(name,btn);
+box.appendChild(item);
+});
+}
+
+showGames();
+</script>
+</body>
+</html>
